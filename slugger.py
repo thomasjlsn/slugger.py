@@ -7,11 +7,33 @@ from sys import argv
 
 
 PULLWORDS = []
+try:
+    with open('pullwords.txt', 'r') as pw:
+        # Populate PULLWORDS list.
+        for line in pw.readlines():
+            PULLWORDS.append(line.strip())
+except FileNotFoundError:
+    print(f'\nERROR:File pullwords.txt not found\n')
+    if name == 'posix':  # Linux
+        print(f'Create it with the command:\n  touch pullwords.txt')
+    elif name == 'nt':  # Windows
+        print(f'Create it with the command:\n  type nul > pullwords.txt')
+    exit(1)
 
-with open('pullwords.txt', 'r') as pw:
-    # Populate PULLWORDS list.
-    for line in pw.readlines():
-        PULLWORDS.append(line.strip())
+
+EXCEPTIONS = []
+try:
+    with open('exceptions.txt', 'r') as ex:
+        # Populate EXCEPTIONS list.
+        for line in ex.readlines():
+            EXCEPTIONS.append(line.strip())
+except FileNotFoundError:
+    print(f'\nERROR: File exceptions.txt not found\n')
+    if name == 'posix':  # Linux
+        print(f'Create it with the command:\n  touch exceptions.txt')
+    elif name == 'nt':  # Windows
+        print(f'Create it with the command:\n  type nul > exceptions.txt')
+    exit(1)
 
 
 def swap_chars(title):
@@ -29,9 +51,28 @@ def hyphenate(title):
     return re.sub('[ -]+', '-', title, flags=re.MULTILINE)
 
 
+def isint(x):
+    try:
+        if x >= 0:
+            return True
+    except TypeError:
+        return False
+
+
 def filter_pullwords(title_list):
-    """Remove words from PULLWORDS list."""
-    return [x for x in title_list if x not in PULLWORDS]
+    """Remove words from PULLWORDS. Also removes words less than min_length,
+       unless they are in EXCEPTIONS"""
+    min_length = 3
+
+    words = []
+    for w in title_list:
+        try:  # Preserve ints
+            words.append(str(int(w)))  # WTF python?????
+        except ValueError:
+            if w not in PULLWORDS:
+                if len(w) >= min_length or w in EXCEPTIONS:
+                    words.append(w)
+    return words
 
 
 def slugger(title_raw):
@@ -58,14 +99,16 @@ if __name__ == '__main__':
 
             if USER_INPUT in ('exit', 'q', 'quit'):
                 exit(0)
+            elif USER_INPUT == '':
+                pass
+            else:
+                try:
+                    if argv[1] == '-r' or argv[1] == '--raw':
+                        print(slugger(USER_INPUT))
+                        exit(0)
+                except IndexError:
+                    pass  # in lieu of proper arg handling...
 
-            try:
-                if argv[1] == '-r' or argv[1] == '--raw':
-                    print(slugger(USER_INPUT))
-                    exit(0)
-            except IndexError:
-                pass  # in lieu of proper arg handling...
-
-            copy_to_clipboard(slugger(USER_INPUT))
+                copy_to_clipboard(slugger(USER_INPUT))
     except KeyboardInterrupt:
         exit(1)
