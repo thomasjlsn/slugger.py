@@ -51,17 +51,20 @@ def copy_to_clipboard(slug):
 
 
 if __name__ == '__main__':
-    while True:
-        user_input = input('Enter title: ')
+    try:
+        while True:
+            user_input = input('Enter title: ')
 
-        if user_input == 'quit' or user_input == 'exit':
-            exit(0)
-
-        try:
-            if argv[1] == '-r' or argv[1] == '--raw':
-                print(slugger(user_input))
+            if user_input == 'quit' or user_input == 'exit':
                 exit(0)
-        except IndexError:
-            pass  # in lieu of proper arg handling...
 
-        copy_to_clipboard(slugger(user_input))
+            try:
+                if argv[1] == '-r' or argv[1] == '--raw':
+                    print(slugger(user_input))
+                    exit(0)
+            except IndexError:
+                pass  # in lieu of proper arg handling...
+
+            copy_to_clipboard(slugger(user_input))
+    except KeyboardInterrupt:
+        exit(1)
