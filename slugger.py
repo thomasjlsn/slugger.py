@@ -21,7 +21,7 @@ def swap_chars(title):
 
 def scrub_chars(title):
     # keep only [^N] chars
-    return re.sub('[^a-zA-Z0-9 ~]', '', title, flags=re.MULTILINE)
+    return re.sub('[^a-zA-Z0-9 ~-]', '', title, flags=re.MULTILINE)
 
 
 def hyphenate(title):
