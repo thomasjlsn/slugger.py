@@ -16,12 +16,12 @@ with open('pullwords.txt', 'r') as pw:
 
 def swap_chars(title):
     # swap [N] chars for dashes
-    return re.sub('[~—|]', '-', title)
+    return re.sub('[~—|]', '-', title, flags=re.MULTILINE)
 
 
 def scrub_chars(title):
     # keep only [^N] chars
-    return re.sub('[^a-zA-Z0-9 ~]', '', title)
+    return re.sub('[^a-zA-Z0-9 ~]', '', title, flags=re.MULTILINE)
 
 
 def hyphenate(title):
