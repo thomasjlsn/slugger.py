@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """slugger.py"""
 
-from os import name, system
+from os import system
+from platform import system as OS
 import re
 from sys import argv
-
-
-if name == 'posix':
-    OS = 'NIX'
-elif name == 'nt':
-    OS = 'WIN'
-else:
-    exit(1)
 
 
 EXCEPTIONS = []
@@ -26,9 +20,10 @@ for file in ('exceptions.txt', 'pullwords.txt'):
     except FileNotFoundError:
         print(f'\nERROR: File "{file}" not found\n\nCreate it with the command:')
         print({
-            'NIX': f'  touch {file}',
-            'WIN': f'  type nul > {file}',
-        }[OS])
+            'Darwin':  f'  touch {file}',
+            'Linux':   f'  touch {file}',
+            'Windows': f'  type nul > {file}',
+        }[OS()])
         exit(1)
 
 
@@ -65,9 +60,10 @@ def slugger(title_raw):
 def copy_to_clipboard(string):
     """Copy string to system clipboard."""
     system({
-        'NIX': f'echo "{string}" | xsel --clipboard',
-        'WIN': f'echo {string}| clip',
-    }[OS])
+        'Darwin':  f'echo "{string}" | pbcopy',
+        'Linux':   f'echo "{string}" | xsel --clipboard',
+        'Windows': f'echo {string}| clip',
+    }[OS()])
     print(f'copied "{string}" to clipboard')
 
 
