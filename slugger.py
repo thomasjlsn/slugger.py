@@ -46,9 +46,9 @@ if args.delim:
 else:
     DELIM = '-'
 
-if args.minlen:
-    MINLEN = args.minlen
-else:
+try:
+    MINLEN = int(args.minlen)
+except TypeError:
     MINLEN = 3
 
 
