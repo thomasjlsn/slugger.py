@@ -13,23 +13,23 @@ from sys import argv
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    # Handled in __main__
-    '-r', '--raw',
-    action='store_true',
-    dest='raw',
-    help='print raw output',
-)
-
-parser.add_argument(
     '-d', '--delimiter',
     dest='delim',
-    help='character seperating words',
+    help='character seperating words in slug',
 )
 
 parser.add_argument(
     '-m', '--minlen',
     dest='minlen',
     help='minimum length of words in slug',
+)
+
+parser.add_argument(
+    # Handled in __main__
+    '-r', '--raw',
+    action='store_true',
+    dest='raw',
+    help='print raw output',
 )
 
 parser.add_argument(
