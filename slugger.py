@@ -6,34 +6,21 @@ import re
 from sys import argv
 
 
-PULLWORDS = []
-try:
-    with open('pullwords.txt', 'r') as pw:
-        # Populate PULLWORDS list.
-        for line in pw.readlines():
-            PULLWORDS.append(line.strip())
-except FileNotFoundError:
-    print(f'\nERROR:File pullwords.txt not found\n')
-    if name == 'posix':  # Linux
-        print(f'Create it with the command:\n  touch pullwords.txt')
-    elif name == 'nt':  # Windows
-        print(f'Create it with the command:\n  type nul > pullwords.txt')
-    exit(1)
-
-
 EXCEPTIONS = []
-try:
-    with open('exceptions.txt', 'r') as ex:
-        # Populate EXCEPTIONS list.
-        for line in ex.readlines():
-            EXCEPTIONS.append(line.strip())
-except FileNotFoundError:
-    print(f'\nERROR: File exceptions.txt not found\n')
-    if name == 'posix':  # Linux
-        print(f'Create it with the command:\n  touch exceptions.txt')
-    elif name == 'nt':  # Windows
-        print(f'Create it with the command:\n  type nul > exceptions.txt')
-    exit(1)
+PULLWORDS = []
+
+for f in ('exceptions.txt', 'pullwords.txt'):
+    try:
+        with open(f, 'r') as pw:
+            for line in pw.readlines():
+                PULLWORDS.append(line.strip())
+    except FileNotFoundError:
+        print(f'\nERROR: File "{f}" not found\n\nCreate it with the command:')
+        if name == 'posix':  # Linux
+            print(f'  touch {f}')
+        elif name == 'nt':  # Windows
+            print(f'  type nul > {f}')
+        exit(1)
 
 
 def swap_chars(title):
