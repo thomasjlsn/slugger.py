@@ -13,17 +13,17 @@ EXCEPTIONS = []
 PULLWORDS = []
 
 
-for f in ('exceptions.txt', 'pullwords.txt'):
+for file in ('exceptions.txt', 'pullwords.txt'):
     try:
-        with open(f, 'r') as pw:
-            for line in pw.readlines():
+        with open(file, 'r') as wordlist:
+            for line in wordlist.readlines():
                 PULLWORDS.append(line.strip())
     except FileNotFoundError:
-        print(f'\nERROR: File "{f}" not found\n\nCreate it with the command:')
+        print(f'\nERROR: File "{file}" not found\n\nCreate it with the command:')
         if NIX:
-            print(f'  touch {f}')
+            print(f'  touch {file}')
         elif WIN:
-            print(f'  type nul > {f}')
+            print(f'  type nul > {file}')
         exit(1)
 
 
