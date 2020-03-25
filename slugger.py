@@ -6,8 +6,12 @@ import re
 from sys import argv
 
 
+NIX = name == 'posix'
+WIN = name == 'nt'
+
 EXCEPTIONS = []
 PULLWORDS = []
+
 
 for f in ('exceptions.txt', 'pullwords.txt'):
     try:
@@ -16,9 +20,9 @@ for f in ('exceptions.txt', 'pullwords.txt'):
                 PULLWORDS.append(line.strip())
     except FileNotFoundError:
         print(f'\nERROR: File "{f}" not found\n\nCreate it with the command:')
-        if name == 'posix':  # Linux
+        if NIX:
             print(f'  touch {f}')
-        elif name == 'nt':  # Windows
+        elif WIN:
             print(f'  type nul > {f}')
         exit(1)
 
@@ -64,9 +68,9 @@ def slugger(title_raw):
 
 def copy_to_clipboard(slug):
     """Copy output of slugger() to system clipboard."""
-    if name == 'posix':  # Linux
+    if NIX:
         system(f'echo "{slug}" | xsel --clipboard')
-    elif name == 'nt':  # Windows
+    elif WIN:
         system(f'echo {slug}| clip')
     print(f'copied "{slug}" to clipboard')
 
