@@ -6,73 +6,69 @@ import re
 from sys import argv
 
 
-NIX = name == 'posix'
-WIN = name == 'nt'
+if name == 'posix':
+    OS = 'NIX'
+elif name == 'nt':
+    OS = 'WIN'
+else:
+    exit(1)
+
 
 EXCEPTIONS = []
 PULLWORDS = []
 
 
 for file in ('exceptions.txt', 'pullwords.txt'):
-    try:
+    try:  # To read config files.
         with open(file, 'r') as wordlist:
             for line in wordlist.readlines():
                 PULLWORDS.append(line.strip())
     except FileNotFoundError:
         print(f'\nERROR: File "{file}" not found\n\nCreate it with the command:')
-        if NIX:
-            print(f'  touch {file}')
-        elif WIN:
-            print(f'  type nul > {file}')
+        print({
+            'NIX': f'  touch {file}',
+            'WIN': f'  type nul > {file}',
+        }[OS])
         exit(1)
 
 
-def swap_chars(title):
-    """Swap [N] chars for dashes."""
-    return re.sub('[~—|]', '-', title, flags=re.MULTILINE)
-
-
 def scrub_chars(title):
-    """Keep only [^N] chars."""
-    return re.sub('[^a-zA-Z0-9 ~-]', '', title, flags=re.MULTILINE)
+    """Keep only [^C] chars."""
+    return re.sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=re.MULTILINE)
 
 
 def hyphenate(title):
-    """Reduce [N] chars to a dash."""
-    return re.sub('[ -]+', '-', title, flags=re.MULTILINE)
+    """Reduce [C] chars to a dash."""
+    return re.sub('[ ~-]+', '-', title, flags=re.MULTILINE).strip(' -')
 
 
-def filter_pullwords(title_list):
+def filter_pullwords(title):
     """Remove words from PULLWORDS. Also removes words less than min_length,
-       unless they are in EXCEPTIONS"""
+       unless they are in EXCEPTIONS. Does not remove ints."""
     min_length = 3
-
     words = []
-    for w in title_list:
-        try:  # Preserve ints
-            words.append(str(int(w)))  # WTF python?????
+    for word in title.split():
+        try:  # To preserve ints.
+            words.append(str(int(word)))
         except ValueError:
-            if w not in PULLWORDS:
-                if len(w) >= min_length or w in EXCEPTIONS:
-                    words.append(w)
-    return words
+            if word not in PULLWORDS:
+                if len(word) >= min_length or word in EXCEPTIONS:
+                    words.append(word)
+    return ' '.join(words)
 
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return hyphenate(swap_chars(scrub_chars(
-        ' '.join(
-            filter_pullwords(
-                title_raw.lower().split()))))).strip(' -')
+    return hyphenate(scrub_chars(filter_pullwords(title_raw))).lower()
 
 
-def copy_to_clipboard(slug):
-    """Copy output of slugger() to system clipboard."""
-    if NIX:
-        system(f'echo "{slug}" | xsel --clipboard')
-    elif WIN:
-        system(f'echo {slug}| clip')
-    print(f'copied "{slug}" to clipboard')
+def copy_to_clipboard(string):
+    """Copy string to system clipboard."""
+    system({
+        'NIX': f'echo "{string}" | xsel --clipboard',
+        'WIN': f'echo {string}| clip',
+    }[OS])
+    print(f'copied "{string}" to clipboard')
 
 
 if __name__ == '__main__':
