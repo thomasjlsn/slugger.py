@@ -5,7 +5,7 @@
 import argparse
 from os import system
 from platform import system as OS
-import re
+from re import sub, MULTILINE
 from sys import argv
 
 
@@ -73,20 +73,20 @@ for file in ('exceptions.txt', 'pullwords.txt'):
 
 def scrub_chars(title):
     """Keep only [^C] chars."""
-    return re.sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=re.MULTILINE).lower()
+    return sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=MULTILINE).lower()
 
 
 def reduce_chars(title):
     """Reduce [C] chars to single DELIM. Uses 0th index in case DELIM is
        provided as multi-char string"""
-    return re.sub('[ ~-]+', DELIM[0], title, flags=re.MULTILINE).strip(' -')
+    return sub('[ ~-]+', DELIM[0], title, flags=MULTILINE).strip(' -')
 
 
 def filter_pullwords(title):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS. Does not remove ints."""
     return ' '.join([w for w in title.split() if
-                    (w not in PULLWORDS and len(w) >= MINLEN)
+                    (w not in PULLWORDS and len(w) >= int(MINLEN))
                     or
                     (w in EXCEPTIONS or w.isnumeric())])
 
