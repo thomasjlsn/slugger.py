@@ -4,16 +4,15 @@ slugger('slugger.py converts strings to slugs') ->  slugger-py-converts-strings-
 
 ---
 
-## Usage
+## Basic Usage
+
+```
+python3 slugger.py
+```
 
 By default, `slugger.py` will convert a given string of words into a URL
 slug, using hyphens (`-`) as a delimiter. The result is copied to the
 system clipboard.
-
-**Basic:**
-```
-python3 slugger.py
-```
 
 ## Arguments
 
