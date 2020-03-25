@@ -25,7 +25,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    # Handled in __main__
     '-r', '--raw',
     action='store_true',
     dest='raw',
@@ -41,16 +40,9 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.delim:
-    DELIM = args.delim
-else:
-    DELIM = '-'
 
-try:
-    MINLEN = int(args.minlen)
-except TypeError:
-    MINLEN = 3
-
+DELIM = args.delim if args.delim else '-'
+MINLEN = args.minlen if args.minlen else 3
 
 EXCEPTIONS = []
 PULLWORDS = []
