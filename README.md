@@ -29,6 +29,10 @@ use char `C` instead of the defalt delimiter.
 print results to standard out, then quit (useful for automating/scripting
 slugger).
 
+**-s --skip**
+
+do not remove pullwords from the string.
+
 **Example:**
 *Use underscore instead of hyphen as delimiter*
 ```

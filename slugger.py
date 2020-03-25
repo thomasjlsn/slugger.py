@@ -26,6 +26,13 @@ parser.add_argument(
     help='character seperating words',
 )
 
+parser.add_argument(
+    '-s', '--skip',
+    action='store_true',
+    dest='skip_filter',
+    help='skip removal of pullwords'
+)
+
 args = parser.parse_args()
 
 if args.delim:
@@ -55,7 +62,7 @@ for file in ('exceptions.txt', 'pullwords.txt'):
 
 def scrub_chars(title):
     """Keep only [^C] chars."""
-    return re.sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=re.MULTILINE)
+    return re.sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=re.MULTILINE).lower()
 
 
 def reduce_chars(title):
@@ -80,7 +87,12 @@ def filter_pullwords(title):
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return reduce_chars(scrub_chars(filter_pullwords(title_raw))).lower()
+    return reduce_chars(scrub_chars(
+        {
+            'True':  title_raw,
+            'False': filter_pullwords(title_raw),
+        }[str(args.skip_filter)]
+    ))
 
 
 def copy_to_clipboard(string):
