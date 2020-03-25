@@ -68,7 +68,13 @@ def copy_to_clipboard(string):
 
 
 if __name__ == '__main__':
-    try:
+    try:  # To handle arguments.
+        if argv[1] == '-r' or argv[1] == '--raw':
+            print(slugger(USER_INPUT))
+            exit(0)
+    except IndexError:  # In lieu of proper arg handling...
+        pass
+    try:  # To handle interrupts gracefully.
         while True:
             USER_INPUT = input('Enter title: ')
 
@@ -77,13 +83,6 @@ if __name__ == '__main__':
             elif USER_INPUT == '':
                 pass
             else:
-                try:
-                    if argv[1] == '-r' or argv[1] == '--raw':
-                        print(slugger(USER_INPUT))
-                        exit(0)
-                except IndexError:
-                    pass  # in lieu of proper arg handling...
-
                 copy_to_clipboard(slugger(USER_INPUT))
     except KeyboardInterrupt:
         exit(1)
