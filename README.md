@@ -22,16 +22,24 @@ modify it's default behavior.
 
 **-d C --delimiter C**
 
-use char `C` instead of the defalt delimiter.
+*defult: -*
+
+Use char `C` instead of the defalt delimiter.
+
+**-m N --minlen N**
+
+*default: 3*
+
+Set minimum length `N` of words to keep in the slug.
 
 **-r --raw**
 
-print results to standard out, then quit (useful for automating/scripting
+Print results to standard out, then quit (useful for automating/scripting
 slugger).
 
 **-s --skip**
 
-do not remove pullwords from the string.
+Do not remove pullwords from the string. This argument overrides `-m`.
 
 **Example:**
 *Use underscore instead of hyphen as delimiter*
@@ -64,7 +72,12 @@ type nul > pullwords.txt
 
 ## Installation
 
-**quick download:**
+**via git:**
+```
+git clone https://github.com/thomasjlsn/slugger.py
+```
+
+**download the script:**
 *you can download just the script with the following:*
 ```
 curl -o slugger.py https://raw.githubusercontent.com/thomasjlsn/slugger.py/master/slugger.py

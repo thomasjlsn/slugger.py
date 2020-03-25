@@ -27,10 +27,16 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '-m', '--minlen',
+    dest='minlen',
+    help='minimum length of words in slug',
+)
+
+parser.add_argument(
     '-s', '--skip',
     action='store_true',
     dest='skip_filter',
-    help='skip removal of pullwords'
+    help='skip removal of pullwords, overrides "-m" argument'
 )
 
 args = parser.parse_args()
@@ -39,6 +45,11 @@ if args.delim:
     DELIM = args.delim
 else:
     DELIM = '-'
+
+if args.minlen:
+    MINLEN = args.minlen
+else:
+    MINLEN = 3
 
 
 EXCEPTIONS = []
@@ -74,15 +85,10 @@ def reduce_chars(title):
 def filter_pullwords(title):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS. Does not remove ints."""
-    min_length = 3
-    words = []
-    for word in title.split():
-        if word.isnumeric():
-            words.append(word)
-        elif word not in PULLWORDS:
-            if len(word) >= min_length or word in EXCEPTIONS:
-                words.append(word)
-    return ' '.join(words)
+    return ' '.join([w for w in title.split() if
+                    (w not in PULLWORDS and len(w) >= MINLEN)
+                    or
+                    (w in EXCEPTIONS or w.isnumeric())])
 
 
 def slugger(title_raw):
