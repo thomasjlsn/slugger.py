@@ -70,7 +70,7 @@ def copy_to_clipboard(string):
 if __name__ == '__main__':
     try:  # To handle arguments.
         if argv[1] == '-r' or argv[1] == '--raw':
-            print(slugger(USER_INPUT))
+            print(slugger(input('Enter title: ')))
             exit(0)
     except IndexError:  # In lieu of proper arg handling...
         pass
