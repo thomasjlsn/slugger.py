@@ -1,6 +1,6 @@
 # slugger.py
 
-Convert strings to slugs => convert-strings-slugs
+slugger('slugger.py converts strings to slugs') ->  slugger-py-converts-strings-slugs
 
 ---
 
@@ -56,7 +56,7 @@ containing newline delimited words to remove from the slug, and words to
 preserve, respectively. These files need to live in the same directory as
 slugger.py. If they do not exist they can be created with:
 
-**Linux:**
+**Linux / Mac:**
 ```
 touch exceptions.txt
 touch pullwords.txt
@@ -77,9 +77,14 @@ type nul > pullwords.txt
 git clone https://github.com/thomasjlsn/slugger.py
 ```
 
-**download the script:**
-*you can download just the script with the following:*
+**[download the script here](https://raw.githubusercontent.com/thomasjlsn/slugger.py/master/slugger.py)**
+*or run the command:*
 ```
 curl -o slugger.py https://raw.githubusercontent.com/thomasjlsn/slugger.py/master/slugger.py
 ```
 
+**[download the zip here](https://github.com/thomasjlsn/slugger.py/archive/master.zip)**
+*or run the command:*
+```
+curl -o slugger.zip https://github.com/thomasjlsn/slugger.py/archive/master.zip
+```
