@@ -51,14 +51,6 @@ def hyphenate(title):
     return re.sub('[ -]+', '-', title, flags=re.MULTILINE)
 
 
-def isint(x):
-    try:
-        if x >= 0:
-            return True
-    except TypeError:
-        return False
-
-
 def filter_pullwords(title_list):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS"""
