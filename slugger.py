@@ -43,12 +43,11 @@ def filter_pullwords(title):
     min_length = 3
     words = []
     for word in title.split():
-        try:  # To preserve ints.
-            words.append(str(int(word)))
-        except ValueError:
-            if word not in PULLWORDS:
-                if len(word) >= min_length or word in EXCEPTIONS:
-                    words.append(word)
+        if word.isnumeric():
+            words.append(word)
+        elif word not in PULLWORDS:
+            if len(word) >= min_length or word in EXCEPTIONS:
+                words.append(word)
     return ' '.join(words)
 
 
