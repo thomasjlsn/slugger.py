@@ -1,15 +1,41 @@
 # slugger.py
 
-A python script to turn a string (in this case, a blog post title) into a URL slug.
+Convert strings to slugs => convert-strings-slugs
 
-Run with no arguments, `python3 slugger.py` will copy the output to the
+---
+
+## Usage
+
+By default, `slugger.py` will convert a given string of words into a URL
+slug, using hyphens (`-`) as a delimiter. The result is copied to the
 system clipboard.
-Given the `-r` or `--raw` flags, the output will be printed to standard out.
 
-**quick download:**
+**Basic:**
 ```
-curl -o slugger.py https://raw.githubusercontent.com/thomasjlsn/slugger.py/master/slugger.py
+python3 slugger.py
 ```
+
+## Arguments
+
+`slugger.py` may also be run with optional command line arguments that will
+modify it's default behavior.
+
+**-d C --delimiter C**
+
+use char `C` instead of the defalt delimiter.
+
+**-r --raw**
+
+print results to standard out, then quit (useful for automating/scripting
+slugger).
+
+**Example:**
+*Use underscore instead of hyphen as delimiter*
+```
+python3 slugger.py -d _
+```
+
+---
 
 ## Configuration
 
@@ -18,14 +44,25 @@ containing newline delimited words to remove from the slug, and words to
 preserve, respectively. These files need to live in the same directory as
 slugger.py. If they do not exist they can be created with:
 
-**Linux**
+**Linux:**
 ```
 touch exceptions.txt
 touch pullwords.txt
 ```
 
-**Windows**
+**Windows:**
 ```
 type nul > exceptions.txt
 type nul > pullwords.txt
 ```
+
+---
+
+## Installation
+
+**quick download:**
+*you can download just the script with the following:*
+```
+curl -o slugger.py https://raw.githubusercontent.com/thomasjlsn/slugger.py/master/slugger.py
+```
+
