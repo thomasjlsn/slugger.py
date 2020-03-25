@@ -2,10 +2,36 @@
 # -*- coding: utf-8 -*-
 """slugger.py"""
 
+import argparse
 from os import system
 from platform import system as OS
 import re
 from sys import argv
+
+
+# Argument handling.
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    # Handled in __main__
+    '-r', '--raw',
+    action='store_true',
+    dest='raw',
+    help='print raw output',
+)
+
+parser.add_argument(
+    '-d', '--delimiter',
+    dest='delim',
+    help='character seperating words',
+)
+
+args = parser.parse_args()
+
+if args.delim:
+    DELIM = args.delim
+else:
+    DELIM = '-'
 
 
 EXCEPTIONS = []
@@ -32,9 +58,10 @@ def scrub_chars(title):
     return re.sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=re.MULTILINE)
 
 
-def hyphenate(title):
-    """Reduce [C] chars to a dash."""
-    return re.sub('[ ~-]+', '-', title, flags=re.MULTILINE).strip(' -')
+def reduce_chars(title):
+    """Reduce [C] chars to single DELIM. Uses 0th index in case DELIM is
+       provided as multi-char string"""
+    return re.sub('[ ~-]+', DELIM[0], title, flags=re.MULTILINE).strip(' -')
 
 
 def filter_pullwords(title):
@@ -53,7 +80,7 @@ def filter_pullwords(title):
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return hyphenate(scrub_chars(filter_pullwords(title_raw))).lower()
+    return reduce_chars(scrub_chars(filter_pullwords(title_raw))).lower()
 
 
 def copy_to_clipboard(string):
@@ -67,12 +94,10 @@ def copy_to_clipboard(string):
 
 
 if __name__ == '__main__':
-    try:  # To handle arguments.
-        if argv[1] == '-r' or argv[1] == '--raw':
-            print(slugger(input('Enter title: ')))
-            exit(0)
-    except IndexError:  # In lieu of proper arg handling...
-        pass
+    if args.raw:
+        print(slugger(input('Enter title: ')))
+        exit(0)
+
     try:  # To handle interrupts gracefully.
         while True:
             USER_INPUT = input('Enter title: ')
