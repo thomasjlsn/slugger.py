@@ -6,7 +6,6 @@ import argparse
 from os import system
 from platform import system as OS
 from re import sub, MULTILINE
-from sys import argv
 
 
 # Argument handling.
