@@ -19,6 +19,12 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '-i', '--input',
+    dest='input_string',
+    help='input string',
+)
+
+parser.add_argument(
     '-m', '--minlen',
     dest='minlen',
     help='minimum length of words in slug',
@@ -100,17 +106,21 @@ def copy_to_clipboard(string):
         'Linux':   f'echo "{string}" | xsel --clipboard',
         'Windows': f'echo {string}| clip',
     }[OS()])
-    print(f'copied "{string}" to clipboard')
+    if not args.raw:
+        print(f'copied "{string}" to clipboard')
 
 
 if __name__ == '__main__':
-    if args.raw:
-        print(slugger(input('Enter title: ')))
+    if args.input_string:
+        if args.raw:
+            print(slugger(args.input_string))
+        else:
+            copy_to_clipboard(slugger(args.input_string))
         exit(0)
 
     try:  # To handle interrupts gracefully.
         while True:
-            USER_INPUT = input('Enter title: ')
+            USER_INPUT = input('Enter string: ')
 
             if USER_INPUT in ('exit', 'q', 'quit'):
                 exit(0)

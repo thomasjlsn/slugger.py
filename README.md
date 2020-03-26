@@ -4,7 +4,7 @@ slugger('slugger.py converts strings to slugs') ->  slugger-py-converts-strings-
 
 ---
 
-## Basic Usage
+## Usage
 
 ```
 python3 slugger.py
@@ -25,6 +25,11 @@ modify it's default behavior.
 
 Use char `C` instead of the defalt delimiter.
 
+**-i STRING --input STRING**
+
+convert `STRING` to a URL slug, then quit. **note**: `STRING` must be quoted
+if it contains whitespace.
+
 **-m N --minlen N**
 
 *default: 3*
@@ -33,15 +38,17 @@ Set minimum length `N` of words to keep in the slug.
 
 **-r --raw**
 
-Print results to standard out, then quit (useful for automating/scripting
-slugger).
+Suppress `Copied "..." to clipboard` message. If used in conjunction with
+the `-i` argument, results are printed to standard out instead of copying
+to clipboard.
 
 **-s --skip**
 
 Do not remove pullwords from the string. This argument overrides `-m`.
 
 **Example:**
-*Use underscore instead of hyphen as delimiter*
+
+**-** *Use underscore instead of hyphen as delimiter*
 ```
 python3 slugger.py -d _
 ```
