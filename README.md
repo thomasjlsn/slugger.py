@@ -46,6 +46,10 @@ to clipboard.
 
 Do not remove pullwords from the string. This argument overrides `-m`.
 
+**-u --url-encode**
+
+Percent encode special characters instead of removing them
+
 **Example:**
 
 **-** *Use underscore instead of hyphen as delimiter*

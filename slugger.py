@@ -6,6 +6,7 @@ import argparse
 from os import system
 from platform import system as OS
 from re import sub, MULTILINE
+from urllib.parse import quote
 
 
 # Argument handling.
@@ -40,7 +41,14 @@ parser.add_argument(
     '-s', '--skip',
     action='store_true',
     dest='skip_filter',
-    help='skip removal of pullwords, overrides "-m" argument'
+    help='skip removal of pullwords, overrides "-m" argument',
+)
+
+parser.add_argument(
+    '-u', '--url-encode',
+    action='store_true',
+    dest='urlencode',
+    help='percent encode characters instead of stripping them',
 )
 
 args = parser.parse_args()
@@ -68,34 +76,37 @@ for file in ('exceptions.txt', 'pullwords.txt'):
         exit(1)
 
 
-def scrub_chars(title):
+def sanitize(title):
     """Keep only [^C] chars."""
-    return sub('[^a-zA-Z0-9 ~-]', ' ', title, flags=MULTILINE).lower()
+    if args.urlencode:
+        return quote(title.lower())
+    else:
+        return sub('[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
 
 
 def reduce_chars(title):
-    """Reduce [C] chars to single DELIM. Uses 0th index in case DELIM is
-       provided as multi-char string"""
-    return sub('[ ~-]+', DELIM[0], title, flags=MULTILINE).strip(' -')
+    """Reduce [C] chars to single DELIM."""
+    return sub('[ ~-]+', DELIM, title, flags=MULTILINE).strip(' -' + DELIM)
 
 
 def filter_pullwords(title):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS. Does not remove ints."""
-    return ' '.join([w for w in title.split() if
-                    (w not in PULLWORDS and len(w) >= int(MINLEN))
-                    or
-                    (w in EXCEPTIONS or w.isnumeric())])
+    if args.skip_filter:
+        return title
+    else:
+        return ' '.join([
+            w for w in title.split() if (
+                w not in PULLWORDS and len(w) >= int(MINLEN)
+            ) or (
+                w in EXCEPTIONS or w.isnumeric()
+            )
+        ])
 
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return reduce_chars(scrub_chars(
-        {
-            'True':  title_raw,
-            'False': filter_pullwords(title_raw),
-        }[str(args.skip_filter)]
-    ))
+    return reduce_chars(sanitize(filter_pullwords(title_raw)))
 
 
 def copy_to_clipboard(string):
