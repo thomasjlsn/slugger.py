@@ -5,8 +5,9 @@
 import argparse
 from os import system
 from platform import system as OS
-from re import sub, MULTILINE
+from re import findall, sub, MULTILINE
 from urllib.parse import quote
+from time import strftime as date
 
 
 # Argument handling.
@@ -76,17 +77,32 @@ for file in ('exceptions.txt', 'pullwords.txt'):
         exit(1)
 
 
+def year_fix(title):
+    years = findall(r"\'[0-9]{2}", title)
+    if len(years) == 0:
+        return title
+    while len(years) > 0:
+        y = years[0]
+        if int(y[1:3]) > int(date('%y')):
+            title = sub(y, sub(r"'", '19', y), title)
+        else:
+            replacement = input(f'ERROR: Fix year {y}: ')
+            title = sub(y, replacement, title)
+        years.pop(0)
+    return title
+
+
 def sanitize(title):
     """Keep only [^C] chars."""
     if args.urlencode:
         return quote(title.lower())
     else:
-        return sub('[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
+        return sub(r'[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
 
 
 def reduce_chars(title):
     """Reduce [C] chars to single DELIM."""
-    return sub('[ ~-]+', DELIM, title, flags=MULTILINE).strip(' -' + DELIM)
+    return sub(r'[ ~-]+', DELIM, title, flags=MULTILINE).strip(' -' + DELIM)
 
 
 def filter_pullwords(title):
@@ -106,7 +122,7 @@ def filter_pullwords(title):
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return reduce_chars(sanitize(filter_pullwords(title_raw)))
+    return reduce_chars(sanitize(filter_pullwords(year_fix(title_raw))))
 
 
 def copy_to_clipboard(string):
