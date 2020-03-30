@@ -77,7 +77,7 @@ for file in ('exceptions.txt', 'pullwords.txt'):
         exit(1)
 
 
-def year_fix(title):
+def expand_years(title):
     years = findall(r"\'[0-9]{2}", title)
     if len(years) == 0:
         return title
@@ -122,7 +122,11 @@ def filter_pullwords(title):
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    return reduce_chars(sanitize(filter_pullwords(year_fix(title_raw))))
+    t = sub("[']", '', expand_years(title_raw))
+    t = filter_pullwords(t)
+    t = sanitize(t)
+    t = reduce_chars(t)
+    return t
 
 
 def copy_to_clipboard(string):
