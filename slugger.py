@@ -58,15 +58,15 @@ args = parser.parse_args()
 DELIM = args.delim if args.delim else '-'
 MINLEN = args.minlen if args.minlen else 3
 
-EXCEPTIONS = []
-PULLWORDS = []
+EXCEPTIONS = set()
+PULLWORDS = set()
 
 
 for file in ('exceptions.txt', 'pullwords.txt'):
     try:  # To read config files.
         with open(file, 'r') as wordlist:
             for line in wordlist.readlines():
-                PULLWORDS.append(line.strip())
+                PULLWORDS.add(line.strip())
     except FileNotFoundError:
         print(f'\nERROR: File "{file}" not found\n\nCreate it with the command:')
         print({
