@@ -86,47 +86,47 @@ except FileNotFoundError:
         pass  # Make the file
 
 
-def expand_years(title):
+def expand_years(string):
     """Expand years abbreviated with an apostrophie."""
-    years = findall(r"\'[0-9]{2}", title)
+    years = findall(r"\'[0-9]{2}", string)
     if not years:
-        return title
+        return string
     while years:
         year = years[0]
         if int(year[1:3]) > int(date('%y')):
-            title = sub(year, sub(r"'", '19', year), title)
+            string = sub(year, sub(r"'", '19', year), string)
         elif ARGS.confirm:
             response = input(f'Fix year "{year}": ')
             if response == '':
-                title = sub(year, sub(r"'", '20', year), title)
+                string = sub(year, sub(r"'", '20', year), string)
             else:
-                title = sub(year, response, title)
+                string = sub(year, response, string)
         else:
-            title = sub(year, sub(r"'", '20', year), title)
+            string = sub(year, sub(r"'", '20', year), string)
         years.pop(0)
-    return title
+    return string
 
 
-def sanitize(title):
+def sanitize(string):
     """Keep only [^C] chars."""
     if ARGS.urlencode:
-        return quote(title.lower())
-    return sub(r'[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
+        return quote(string.lower())
+    return sub(r'[^a-z0-9 ~-]', ' ', string.lower(), flags=MULTILINE)
 
 
-def reduce_chars(title):
+def reduce_chars(string):
     """Reduce [C] chars to single DELIM."""
-    return sub(r'[ ~-]+', DELIM, title, flags=MULTILINE).strip(' -' + DELIM)
+    return sub(r'[ ~-]+', DELIM, string, flags=MULTILINE).strip(' -' + DELIM)
 
 
-def filter_pullwords(title):
+def filter_pullwords(string):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS. Does not remove ints."""
     if ARGS.skip_filter:
-        return title
+        return string
     elif ARGS.confirm:
         words = []
-        for word in title.split():
+        for word in string.split():
             if (word not in PULLWORDS and len(word) >= int(MINLEN)):
                 words.append(word)
             else:
@@ -139,7 +139,7 @@ def filter_pullwords(title):
         return ' '.join(words)
 
     return ' '.join([
-        word for word in title.split() if (
+        word for word in string.split() if (
             word not in PULLWORDS and len(word) >= int(MINLEN)
         ) or (
             word in EXCEPTIONS or word.isnumeric()
@@ -147,9 +147,9 @@ def filter_pullwords(title):
     ])
 
 
-def slugger(title_raw):
+def slugger(string_raw):
     """Convert string of words to URL slug."""
-    string = sub("[']", '', expand_years(title_raw))
+    string = sub("[']", '', expand_years(string_raw))
     string = filter_pullwords(string)
     string = sanitize(string)
     string = reduce_chars(string)
