@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument(
     '-c', '--confirm',
+    action='store_true',
     dest='confirm',
     help='prompt for confirmation when removing segments from string',
 )
