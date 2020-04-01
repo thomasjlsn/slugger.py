@@ -95,8 +95,8 @@ def expand_years(title):
         if int(y[1:3]) > int(date('%y')):
             title = sub(y, sub(r"'", '19', y), title)
         elif args.confirm:
-            replacement = input(f'ERROR: Fix year {y}: ')
-            title = sub(y, replacement, title)
+            response = input(f'Fix year "{y}": ')
+            title = sub(y, response, title)
         else:
             title = sub(y, sub(r"'", '20', y), title)
         years.pop(0)
@@ -121,6 +121,17 @@ def filter_pullwords(title):
        unless they are in EXCEPTIONS. Does not remove ints."""
     if args.skip_filter:
         return title
+    elif args.confirm:
+        t = []
+        for w in title.split():
+            if (w not in PULLWORDS and len(w) >= int(MINLEN)):
+                t.append(w)
+            else:
+                response = input(f'Keep "{w}"? (y/n): ')
+                if response.lower() == 'y':
+                    t.append(w)
+        return ' '.join(t)
+
     else:
         return ' '.join([
             w for w in title.split() if (
