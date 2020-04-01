@@ -73,17 +73,17 @@ try:
     with open('exceptions.txt', 'r') as wordlist:
         for line in wordlist.readlines():
             EXCEPTIONS.add(line.strip())
+except FileNotFoundError:
+    with open('exceptions.txt', 'a') as wordlist:
+        pass  # Make the file
+
+try:
     with open('pullwords.txt', 'r') as wordlist:
         for line in wordlist.readlines():
             PULLWORDS.add(line.strip())
 except FileNotFoundError:
-    print(f'\nERROR: File "{file}" not found\n\nCreate it with the command:')
-    print({
-        'Darwin':  f'  touch {file}',
-        'Linux':   f'  touch {file}',
-        'Windows': f'  type nul > {file}',
-    }[OS()])
-    exit(1)
+    with open('pullwords.txt', 'a') as wordlist:
+        pass  # Make the file
 
 
 def expand_years(title):
