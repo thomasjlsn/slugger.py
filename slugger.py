@@ -96,7 +96,10 @@ def expand_years(title):
             title = sub(y, sub(r"'", '19', y), title)
         elif args.confirm:
             response = input(f'Fix year "{y}": ')
-            title = sub(y, response, title)
+            if response == '':
+                title = sub(y, sub(r"'", '20', y), title)
+            else:
+                title = sub(y, response, title)
         else:
             title = sub(y, sub(r"'", '20', y), title)
         years.pop(0)
@@ -127,8 +130,11 @@ def filter_pullwords(title):
             if (w not in PULLWORDS and len(w) >= int(MINLEN)):
                 t.append(w)
             else:
-                response = input(f'Keep "{w}"? (y/n): ')
-                if response.lower() == 'y':
+                try:
+                    response = input(f'Keep "{w}"? (y/n): ')
+                    if response.lower()[0] == 'y':
+                        t.append(w)
+                except IndexError:  # Assume blank input is a yes
                     t.append(w)
         return ' '.join(t)
 
