@@ -34,6 +34,10 @@ class TestSlugger(unittest.TestCase):
             'bobs-1966-chevy'
         )
         self.assertEqual(
+            s("tom's '06 Camaro"),
+            'toms-2006-camaro'
+        )
+        self.assertEqual(
             s('I got 99 problems'),
             'got-99-problems'
         )
