@@ -41,9 +41,11 @@ class TestSlugger(unittest.TestCase):
             s('I got 99 problems'),
             'got-99-problems'
         )
+
+    def test_multiple_years(self):
         self.assertEqual(
-            s("a '49 '50 '51 '52"),
-            '1949-1950-1951-1952'
+            s("a '49 '50 '51 '52 '08"),
+            '1949-1950-1951-1952-2008'
         )
 
     def test_hypenation(self):
