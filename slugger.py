@@ -11,59 +11,59 @@ from time import strftime as date
 
 
 # Argument handling.
-parser = argparse.ArgumentParser()
+PARSER = argparse.ArgumentParser()
 
-parser.add_argument(
+PARSER.add_argument(
     '-c', '--confirm',
     action='store_true',
     dest='confirm',
     help='prompt for confirmation when removing segments from string',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-d', '--delimiter',
     dest='delim',
     help='character seperating words in slug',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-i', '--input',
     dest='input_string',
     help='input string',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-m', '--minlen',
     dest='minlen',
     help='minimum length of words in slug',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-r', '--raw',
     action='store_true',
     dest='raw',
     help='print raw output',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-s', '--skip',
     action='store_true',
     dest='skip_filter',
     help='skip removal of pullwords, overrides "-m" argument',
 )
 
-parser.add_argument(
+PARSER.add_argument(
     '-u', '--url-encode',
     action='store_true',
     dest='urlencode',
     help='percent encode characters instead of stripping them',
 )
 
-args = parser.parse_args()
+ARGS = PARSER.parse_args()
 
 
-DELIM = args.delim if args.delim else '-'
-MINLEN = args.minlen if args.minlen else 3
+DELIM = ARGS.delim if ARGS.delim else '-'
+MINLEN = ARGS.minlen if ARGS.minlen else 3
 
 EXCEPTIONS = set()
 PULLWORDS = set()
@@ -87,31 +87,31 @@ except FileNotFoundError:
 
 
 def expand_years(title):
+    """Expand years abbreviated with an apostrophie."""
     years = findall(r"\'[0-9]{2}", title)
-    if len(years) == 0:
+    if not years:
         return title
-    while len(years) > 0:
-        y = years[0]
-        if int(y[1:3]) > int(date('%y')):
-            title = sub(y, sub(r"'", '19', y), title)
-        elif args.confirm:
-            response = input(f'Fix year "{y}": ')
+    while years:
+        year = years[0]
+        if int(year[1:3]) > int(date('%y')):
+            title = sub(year, sub(r"'", '19', year), title)
+        elif ARGS.confirm:
+            response = input(f'Fix year "{year}": ')
             if response == '':
-                title = sub(y, sub(r"'", '20', y), title)
+                title = sub(year, sub(r"'", '20', year), title)
             else:
-                title = sub(y, response, title)
+                title = sub(year, response, title)
         else:
-            title = sub(y, sub(r"'", '20', y), title)
+            title = sub(year, sub(r"'", '20', year), title)
         years.pop(0)
     return title
 
 
 def sanitize(title):
     """Keep only [^C] chars."""
-    if args.urlencode:
+    if ARGS.urlencode:
         return quote(title.lower())
-    else:
-        return sub(r'[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
+    return sub(r'[^a-z0-9 ~-]', ' ', title.lower(), flags=MULTILINE)
 
 
 def reduce_chars(title):
@@ -122,39 +122,38 @@ def reduce_chars(title):
 def filter_pullwords(title):
     """Remove words from PULLWORDS. Also removes words less than min_length,
        unless they are in EXCEPTIONS. Does not remove ints."""
-    if args.skip_filter:
+    if ARGS.skip_filter:
         return title
-    elif args.confirm:
-        t = []
-        for w in title.split():
-            if (w not in PULLWORDS and len(w) >= int(MINLEN)):
-                t.append(w)
+    elif ARGS.confirm:
+        words = []
+        for word in title.split():
+            if (word not in PULLWORDS and len(word) >= int(MINLEN)):
+                words.append(word)
             else:
                 try:
-                    response = input(f'Keep "{w}"? (y/n): ')
+                    response = input(f'Keep "{word}"? (y/n): ')
                     if response.lower()[0] == 'y':
-                        t.append(w)
+                        words.append(word)
                 except IndexError:  # Assume blank input is a yes
-                    t.append(w)
-        return ' '.join(t)
+                    words.append(word)
+        return ' '.join(words)
 
-    else:
-        return ' '.join([
-            w for w in title.split() if (
-                w not in PULLWORDS and len(w) >= int(MINLEN)
-            ) or (
-                w in EXCEPTIONS or w.isnumeric()
-            )
-        ])
+    return ' '.join([
+        word for word in title.split() if (
+            word not in PULLWORDS and len(word) >= int(MINLEN)
+        ) or (
+            word in EXCEPTIONS or word.isnumeric()
+        )
+    ])
 
 
 def slugger(title_raw):
     """Convert string of words to URL slug."""
-    t = sub("[']", '', expand_years(title_raw))
-    t = filter_pullwords(t)
-    t = sanitize(t)
-    t = reduce_chars(t)
-    return t
+    string = sub("[']", '', expand_years(title_raw))
+    string = filter_pullwords(string)
+    string = sanitize(string)
+    string = reduce_chars(string)
+    return string
 
 
 def copy_to_clipboard(string):
@@ -164,16 +163,16 @@ def copy_to_clipboard(string):
         'Linux':   f'echo "{string}" | xsel --clipboard',
         'Windows': f'echo {string}| clip',
     }[OS()])
-    if not args.raw:
+    if not ARGS.raw:
         print(f'copied "{string}" to clipboard')
 
 
 if __name__ == '__main__':
-    if args.input_string:
-        if args.raw:
-            print(slugger(args.input_string))
+    if ARGS.input_string:
+        if ARGS.raw:
+            print(slugger(ARGS.input_string))
         else:
-            copy_to_clipboard(slugger(args.input_string))
+            copy_to_clipboard(slugger(ARGS.input_string))
         exit(0)
 
     try:  # To handle interrupts gracefully.

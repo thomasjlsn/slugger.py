@@ -6,3 +6,16 @@ install:
 
 uninstall:
 	@rm $(PREFIX)/bin/$(BIN)
+
+lint:
+	@pylint3 slugger.py
+
+test:
+	@python3 test_slugger.py
+
+commit: lint test
+	@git commit
+
+
+push: lint test
+	@git push
