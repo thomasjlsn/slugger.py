@@ -41,6 +41,10 @@ class TestSlugger(unittest.TestCase):
             s('I got 99 problems'),
             'got-99-problems'
         )
+        self.assertEqual(
+            s("a '49 '50 '51 '52"),
+            '1949-1950-1951-1952'
+        )
 
     def test_hypenation(self):
         self.assertEqual(

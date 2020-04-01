@@ -91,8 +91,7 @@ def expand_years(string):
     years = findall(r"\'[0-9]{2}", string)
     if not years:
         return string
-    while years:
-        year = years[0]
+    for year in years:
         if int(year[1:3]) > int(date('%y')):
             string = sub(year, sub(r"'", '19', year), string)
         elif ARGS.confirm:
@@ -103,7 +102,6 @@ def expand_years(string):
                 string = sub(year, response, string)
         else:
             string = sub(year, sub(r"'", '20', year), string)
-        years.pop(0)
     return string
 
 
