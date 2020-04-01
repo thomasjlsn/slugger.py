@@ -93,9 +93,11 @@ def expand_years(title):
         y = years[0]
         if int(y[1:3]) > int(date('%y')):
             title = sub(y, sub(r"'", '19', y), title)
-        else:
+        elif args.confirm:
             replacement = input(f'ERROR: Fix year {y}: ')
             title = sub(y, replacement, title)
+        else:
+            title = sub(y, sub(r"'", '20', y), title)
         years.pop(0)
     return title
 
