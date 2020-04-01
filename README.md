@@ -19,6 +19,10 @@ system clipboard.
 `slugger.py` may also be run with optional command line arguments that will
 modify it's default behavior.
 
+**-c --confirm**
+
+Prompt for confirmation when removing segments from string.
+
 **-d C --delimiter C**
 
 *defult: -*

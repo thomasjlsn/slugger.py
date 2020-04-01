@@ -14,6 +14,12 @@ from time import strftime as date
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
+    '-c', '--confirm',
+    dest='confirm',
+    help='prompt for confirmation when removing segments from string',
+)
+
+parser.add_argument(
     '-d', '--delimiter',
     dest='delim',
     help='character seperating words in slug',
